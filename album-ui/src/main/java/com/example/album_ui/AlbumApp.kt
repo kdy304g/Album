@@ -39,6 +39,7 @@ import com.example.album_ui.component.AlbumExpandedPlayer
 import com.example.album_ui.component.AlbumMiniPlayer
 import com.example.album_ui.component.AlbumTopAppBar
 import com.example.album_ui.navigation.AlbumNavHost
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
 fun AlbumApp(
     windowSizeClass: WindowSizeClass,
     backgroundColor: Color,
+    volumeStateFlow: MutableStateFlow<Int>,
     appState: AlbumAppState = rememberAlbumAppState(
         windowSizeClass = windowSizeClass
     )
@@ -81,7 +83,8 @@ fun AlbumApp(
                     selectedTrack = it,
                     playerEvents = AlbumPlayer,
                     playbackState = AlbumPlayer.playbackState,
-                    playerStates = playerState
+                    playerStates = playerState,
+                    volumeStateFlow = volumeStateFlow
                 )
             }
         },

@@ -1,5 +1,10 @@
 package com.example.album_ui.component
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.media.AudioManager
+import android.media.AudioManager.STREAM_MUSIC
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,21 +14,28 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Slider
+import androidx.compose.material.SliderColors
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.album_player.player.PlayerStates
 import com.example.album_player.util.formatTime
 import com.example.album_domain.model.Track
 import com.example.album_player.player.PlaybackState
 import com.example.album_player.player.PlayerEvents
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -32,7 +44,8 @@ fun AlbumExpandedPlayer(
     selectedTrack: Track,
     playerEvents: PlayerEvents,
     playbackState: StateFlow<PlaybackState>,
-    playerStates: PlayerStates
+    playerStates: PlayerStates,
+    volumeStateFlow: MutableStateFlow<Int>
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -40,7 +53,8 @@ fun AlbumExpandedPlayer(
         TrackInfo(
             trackImage = selectedTrack.trackImage,
             trackName = selectedTrack.trackName,
-            artistName = selectedTrack.artistName
+            artistName = selectedTrack.artistName,
+            volumeStateFlow = volumeStateFlow
         )
         TrackProgressSlider(playbackState = playbackState) {
             playerEvents.onSeekBarPositionChanged(it)
@@ -53,9 +67,13 @@ fun AlbumExpandedPlayer(
         )
     }
 }
-
 @Composable
-fun TrackInfo(trackImage: String, trackName: String, artistName: String) {
+fun TrackInfo(
+    trackImage: String,
+    trackName: String,
+    artistName: String,
+    volumeStateFlow: MutableStateFlow<Int>
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,9 +83,10 @@ fun TrackInfo(trackImage: String, trackName: String, artistName: String) {
             trackImage = trackImage,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(all = 16.dp)
+                .padding(all = 20.dp)
         )
     }
+    VolumeSlider(volumeStateFlow)
     Text(
         text = trackName,
         modifier = Modifier
@@ -79,6 +98,36 @@ fun TrackInfo(trackImage: String, trackName: String, artistName: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
+    )
+}
+
+@Composable
+fun VolumeSlider(
+    volumeStateFlow: MutableStateFlow<Int>
+) {
+    val context = LocalContext.current
+    val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    var volume by remember {
+        mutableFloatStateOf(audioManager.getStreamVolume(STREAM_MUSIC).toFloat())
+    }
+
+    LaunchedEffect(Unit) {
+        volumeStateFlow.collect {
+            volume = it.toFloat()
+        }
+    }
+
+    Slider(
+        value = volume,
+        onValueChange = { volume = it },
+        onValueChangeFinished = {
+            audioManager.setStreamVolume(STREAM_MUSIC, volume.toInt(), 0)
+        },
+        valueRange = 0f..audioManager.getStreamMaxVolume(STREAM_MUSIC).toFloat(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 30.dp),
+        colors = customSliderColors()
     )
 }
 
@@ -143,3 +192,12 @@ fun TrackControls(
         NextIcon(onClick = onNextClick)
     }
 }
+
+@Composable
+private fun customSliderColors(): SliderColors = SliderDefaults.colors(
+    activeTickColor = Color.Transparent,
+    inactiveTickColor = Color.Transparent,
+    inactiveTrackColor = Color.LightGray,
+    activeTrackColor = Color.Blue,
+    thumbColor = Color.Blue
+)
