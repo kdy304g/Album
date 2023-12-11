@@ -29,14 +29,14 @@ fun DetailRoute(
 ) {
     val album = viewModel.album
 
-    DetailContents(
+    DetailScreen(
         modifier = modifier,
         album = album,
     )
 }
 
 @Composable
-fun DetailContents(
+fun DetailScreen(
     modifier: Modifier = Modifier,
     album: Album,
 ) {

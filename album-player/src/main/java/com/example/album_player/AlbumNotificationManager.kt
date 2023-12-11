@@ -27,7 +27,7 @@ private const val NOTIFICATION_ID = 200
 const val NOTIFICATION_CHANNEL_ID = "notification channel id"
 
 class AlbumNotificationManager(
-    val context: Context, val player: Player,
+    private val context: Context, val player: Player,
     private val notificationListener: PlayerNotificationManager.NotificationListener
 ) {
 

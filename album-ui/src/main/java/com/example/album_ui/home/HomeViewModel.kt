@@ -11,5 +11,4 @@ class HomeViewModel @Inject constructor(
     private val getAlbumsUseCase: GetAlbumsUseCase
 ) : ViewModel() {
     fun getAlbums(): List<Album> = getAlbumsUseCase()
-
 }

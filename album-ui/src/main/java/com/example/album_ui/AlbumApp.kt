@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
@@ -20,10 +18,6 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -41,8 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.album_player.player.AlbumPlayer
-import com.example.album_ui.component.AlbumMiniPlayer
 import com.example.album_ui.component.AlbumExpandedPlayer
+import com.example.album_ui.component.AlbumMiniPlayer
+import com.example.album_ui.component.AlbumTopAppBar
 import com.example.album_ui.navigation.AlbumNavHost
 import kotlinx.coroutines.launch
 
@@ -60,6 +55,13 @@ fun AlbumApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val navController = appState.navController
     var canPop by remember { mutableStateOf(false) }
+    val fullScreenState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true
+    )
+    val scope = rememberCoroutineScope()
+    val onBottomTabClick: () -> Unit = { scope.launch { fullScreenState.show() } }
+    val selectedTrack by AlbumPlayer.selectedTrackState.collectAsState(null)
+    val playerState by AlbumPlayer.playerState.collectAsState()
 
     DisposableEffect(navController) {
         val listener = NavController.OnDestinationChangedListener { controller, _, _ ->
@@ -70,14 +72,6 @@ fun AlbumApp(
             navController.removeOnDestinationChangedListener(listener)
         }
     }
-
-    val fullScreenState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true
-    )
-    val scope = rememberCoroutineScope()
-    val onBottomTabClick: () -> Unit = { scope.launch { fullScreenState.show() } }
-    val selectedTrack by AlbumPlayer.selectedTrackState.collectAsState(null)
-    val playerState by AlbumPlayer.playerState.collectAsState()
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -99,28 +93,10 @@ fun AlbumApp(
             modifier = Modifier.fillMaxSize(),
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
-                TopAppBar(
+                AlbumTopAppBar(
+                    canNavigateBack = canPop,
                     backgroundColor = backgroundColor,
-                    title = {
-                        Text(
-                            text = "Album App",
-                            color = Color.White
-                        )
-                    },
-                    navigationIcon = if (canPop) {
-                        {
-                            IconButton(
-                                onClick = { appState.navController.navigateUp() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                    tint = Color.White
-                                )
-                            }
-                        }
-                    } else {
-                        null
-                    }
+                    onNavigationIconClick = { appState.navController.navigateUp() }
                 )
             }
         ) {

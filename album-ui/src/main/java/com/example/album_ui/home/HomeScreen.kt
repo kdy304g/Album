@@ -36,7 +36,6 @@ fun HomeRoute(
 ) {
 
     val albums = remember { mutableStateListOf<Album>() }
-
     val multiplePermissionsState = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.POST_NOTIFICATIONS,
@@ -52,6 +51,19 @@ fun HomeRoute(
         }
     }
 
+    HomeScreen(
+        modifier = modifier,
+        albums = albums,
+        onNavigateToDetail = onNavigateToDetail
+    )
+}
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    albums: MutableList<Album>,
+    onNavigateToDetail: (Long) -> Unit,
+) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
