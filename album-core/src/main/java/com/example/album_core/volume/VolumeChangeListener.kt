@@ -1,4 +1,4 @@
-package com.example.album.volume
+package com.example.album_core.volume
 
 import android.content.BroadcastReceiver
 import android.content.Context

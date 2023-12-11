@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":album-domain"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -51,6 +52,4 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.47")
     kapt("com.google.dagger:hilt-android-compiler:2.47")
-
-    implementation(project(":album-domain"))
 }

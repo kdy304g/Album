@@ -13,8 +13,8 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.lifecycle.lifecycleScope
 import com.example.album.ui.theme.AlbumTheme
 import com.example.album.ui.theme.PurpleGrey80
-import com.example.album.volume.VOLUME_CHANGED_ACTION
-import com.example.album.volume.VolumeChangeListener
+import com.example.album_core.volume.VOLUME_CHANGED_ACTION
+import com.example.album_core.volume.VolumeChangeListener
 import com.example.album_player.player.AlbumPlayer
 import com.example.album_ui.AlbumApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
 
         AlbumPlayer.connect(applicationContext)
         setUpVolumeListener()
-        lifecycleScope
 
         setContent {
             AlbumTheme {

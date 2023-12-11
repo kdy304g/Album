@@ -43,6 +43,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":album-domain"))
+    implementation(project(":album-core"))
+    implementation(project(":album-player"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.1")
@@ -64,9 +67,5 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer:1.2.0")
     implementation("androidx.media3:media3-ui:1.2.0")
     implementation("androidx.media3:media3-session:1.2.0")
-
-    implementation(project(":album-domain"))
-    implementation(project(":album-core"))
-    implementation(project(":album-player"))
 
 }
