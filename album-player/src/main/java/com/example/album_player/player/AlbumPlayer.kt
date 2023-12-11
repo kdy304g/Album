@@ -117,7 +117,6 @@ object AlbumPlayer : PlayerEvents {
     }
 
     private class PlayerListener : Player.Listener {
-
         override fun onPlaybackStateChanged(playbackState: Int) {
             when (playbackState) {
                 Player.STATE_IDLE -> {
@@ -169,7 +168,6 @@ object AlbumPlayer : PlayerEvents {
             super.onPlayerError(error)
             playerState.tryEmit(PlayerStates.STATE_ERROR)
         }
-
     }
 
 }
