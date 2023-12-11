@@ -1,6 +1,8 @@
 plugins {
+    kotlin("kapt")
     id("com.android.library")
     id("kotlin-android")
+    id("com.google.dagger.hilt.android") version "2.47" apply false
 }
 
 android {
@@ -52,7 +54,19 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.compose.material:material:1.5.4")
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+
+    implementation("com.google.dagger:hilt-android:2.47")
+    kapt("com.google.dagger:hilt-android-compiler:2.47")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    implementation ("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-session:1.2.0")
+
+    implementation(project(":album-domain"))
+    implementation(project(":album-core"))
+    implementation(project(":album-player"))
+
 }
